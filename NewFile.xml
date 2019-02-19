@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default ="compile">
+<property name="src.java.dir" location="C:\Program Files\Java\jdk1.8.0_201"/>
+<property name="src.test.dir" location="C:\Users\Qasrawi\eclipse-workspace\ShoppingCardTeses\src"/>
+<property name="result.dir" location="./target"/>
+<property name="result.javaclasses.dir" location="${result.dir}/classes"/>
+<property name="result.testclasses.dir" location="${result.dir}/testclasses"/>
+<property name="result.jar.file" location="./MyProduct.jar"/>
+
+<path id="NecessaryLibraries">
+        <pathelement location="C:\eclipse\plugins\org.junit_4.12.0.v201504281640/junit.jar"/>
+        <!--matcher-->
+        <pathelement location="C:\eclipse\plugins\org.hamcrest.core_1.3.0.v201303031735.jar"/>
+        <pathelement location="C:\eclipse\plugins\orgorg.jacoco.core_0.7.9.v20170208-1730.jar"/>
+    </path>
+    
+<target name="compile">
+<mkdir dir="${result.javaclasses.dir}"/>
+<javac srcdir="${src.java.dir}" destdir="${result.javaclasses.dir}" debug="true" includeantruntime="false">
+</javac>
+</target>
+
+<target name="jar" depends="compile">
+<jar destfile="$result.jar.file}">
+<fileset dir="${result.javaclasses.dir}">
+</fileset>
+</jar>
+</target>
+
+<target name="compile-testcases" depends="compile">
+        <mkdir dir="${result.testclasses.dir}"/>
+        <javac srcdir="${src.test.dir}"  destdir="${result.testclasses.dir}" debug="true" includeantruntime="false">
+            <classpath>
+                
+                <path refid="NecessaryLibraries"/>
+                <pathelement location="${result.javaclasses.dir}"/>
+            </classpath>
+        </javac>        
+    </target>
+    
+  <target name="test" depends="compile-testcases">
+        <!--fork : each test will run in its own JVM (to seperate test cases)-->
+        <junit printsummary="true" haltonfailure="true" fork="true">
+            <classpath>
+                <path refid="NecessaryLibraries"></path>
+                <pathelement location="${result.javaclasses.dir}"/>
+                <pathelement location="${result.testclasses.dir}"/>
+            </classpath>
+            <formatter type="brief" usefile="false"/>
+            <batchtest >
+                <fileset dir="${result.testclasses.dir}" >
+                     <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+            
+        </junit>
+    </target>
+    
+</project>
